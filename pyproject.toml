@@ -1,0 +1,14 @@
+[project]
+name = "blog-fastapi"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "bcrypt>=5.0.0",
+    "fastapi[standard]>=0.121.2",
+    "pydantic-settings>=2.12.0",
+    "pyjwt>=2.10.1",
+    "pymongo>=4.15.4",
+    "rusty-logger>=0.3.0",
+]
