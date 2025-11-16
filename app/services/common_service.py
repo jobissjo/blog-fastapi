@@ -103,19 +103,6 @@ class CommonService:
         except jwt.PyJWTError as e:
             raise CustomException(f"Token is invalid: {e}", status_code=401)
 
-    @staticmethod
-    async def decide_email_username_phone(user_input: str):
-        username = email = phone_number = None
-        email_pattern = r"^[\w\.-]+@[\w\.-]+\.\w+$"
-        phone_pattern = r"^\+?\d{10,15}$"  # supports +91..., etc.
-
-        if re.match(email_pattern, user_input):
-            email = user_input
-        elif re.match(phone_pattern, user_input):
-            phone_number = user_input
-        else:
-            username = user_input
-        return username, email, phone_number
 
     @staticmethod
     async def to_datetime(date_obj):
