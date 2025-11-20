@@ -13,17 +13,17 @@ async def create_series(
     controller: SeriesController = Depends(SeriesController),
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
 ):
-    return controller.create_series(series)
+    return await controller.create_series(series, token)
 
 
 @router.get("/")
 async def get_all_series(controller: SeriesController = Depends(SeriesController)):
-    return controller.get_all_series()
+    return await controller.get_all_series()
 
 
 @router.get("/{series_id}")
-async def get_series_by_id(controller: SeriesController = Depends(SeriesController)):
-    return controller.get_series_by_id()
+async def get_series_by_id(series_id: str, controller: SeriesController = Depends(SeriesController)):
+    return await controller.get_series_by_id(series_id)
 
 
 @router.put("/{series_id}")
@@ -33,9 +33,9 @@ async def update_series(
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: SeriesController = Depends(SeriesController),
 ):
-    return controller.update_series(series_id, series)
+    return await controller.update_series(token, series_id, series)
 
 
 @router.delete("/{series_id}")
 async def delete_series(controller: SeriesController = Depends(SeriesController)):
-    return controller.delete_series()
+    return await controller.delete_series()

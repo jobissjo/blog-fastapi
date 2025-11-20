@@ -1,8 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from app.schemas.common import BaseResponseSchema
 from typing import List
 from app.schemas.common import PyObjectId
-
+from typing import Optional
+from bson.objectid import ObjectId
 
 class BaseSeriesSchema(BaseModel):
     title: str
@@ -19,8 +20,9 @@ class SeriesUpdateSchema(BaseSeriesSchema):
 
 class SeriesResponseSchema(BaseSeriesSchema):
     id: PyObjectId = Field(alias="_id")
-    created_at: str
-    updated_at: str
+    created_at: Optional[str]
+    updated_at: Optional[str]
+    model_config = ConfigDict(populate_by_name=True, json_encoders={ObjectId: str})
 
 
 class SeriesDetailResponseSchema(BaseResponseSchema):

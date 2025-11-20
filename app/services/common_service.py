@@ -12,7 +12,7 @@ from app.schemas.user_schema import UserTokenDecodedData
 from app.core.settings import settings
 from app.utils import CustomException
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
 
 class CommonService:
