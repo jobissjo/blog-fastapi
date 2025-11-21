@@ -9,6 +9,7 @@ class BaseSeriesSchema(BaseModel):
     title: str
     slug: str
     description: str
+    published:bool
 
 
 class SeriesCreateSchema(BaseSeriesSchema):

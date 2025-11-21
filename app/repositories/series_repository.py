@@ -17,12 +17,15 @@ class SeriesRepository:
             "updated_at": datetime.now().isoformat()
         })
 
-    async def get_all_series(self,  skip: int = 0, limit: int = 10, user_id: str = None, search: str = None)->List[SeriesResponseSchema]:
+    async def get_all_series(self,  skip: int = 0, limit: int = 10, user_id: str = None, search: str = None, published:str=None)->List[SeriesResponseSchema]:
         query = {}
         if user_id:
-            query = {"user_id": ObjectId(user_id)}
+            query.update({"user_id": ObjectId(user_id)})
         if search:
-            query = {"$or": [{"title": {"$regex": search, "$options": "i"}}, {"description": {"$regex": search, "$options": "i"}}]}
+            query.update({"$or": [{"title": {"$regex": search, "$options": "i"}}, {"description": {"$regex": search, "$options": "i"}}]})
+        if published is not None:
+            query.update({"published": published})
+
         if query:
             result  = self.collection.find(query).skip(skip).limit(limit)
         else:
@@ -40,7 +43,7 @@ class SeriesRepository:
             {"_id": ObjectId(series_id), "user_id": ObjectId(user_id)}, {"$set": series.model_dump()}
         )
 
-    def delete_series(self, user_id: str, series_id: str)->None:
-        self.collection.delete_one(
+    async def delete_series(self, user_id: str, series_id: str)->None:
+        await self.collection.delete_one(
             {"_id": ObjectId(series_id), "user_id": ObjectId(user_id)}
         )
