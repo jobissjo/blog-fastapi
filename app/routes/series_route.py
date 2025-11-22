@@ -48,6 +48,14 @@ async def get_series_by_id(
     return await controller.get_series_by_id(series_id)
 
 
+@router.get("/slug/{series_slug}")
+async def get_series_by_slug(
+    series_slug: str,
+    controller: SeriesController = Depends(SeriesController),
+):
+    return await controller.get_series_by_slug(series_slug)
+
+
 @router.put("/{series_id}")
 async def update_series(
     series_id: str,

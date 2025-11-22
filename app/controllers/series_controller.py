@@ -19,6 +19,9 @@ class SeriesController:
     async def get_series_by_id(self, series_id: str):
         return await self.service.get_series_by_id(series_id)
 
+    async def get_series_by_slug(self, series_slug: str):
+        return await self.service.get_series_by_slug(series_slug)
+
     async def get_your_series(
         self,
         token: UserTokenDecodedData,

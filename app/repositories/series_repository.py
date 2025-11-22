@@ -35,8 +35,11 @@ class SeriesRepository:
             results.append(SeriesResponseSchema(**document))
         return results
 
-    async def get_series_by_id(self, series_id: str)->SeriesResponseSchema:
-        return SeriesResponseSchema(**await self.collection.find_one({"_id": ObjectId(series_id)}))
+    async def get_series_by_id(self, series_id: str=None, series_slug: str=None)->SeriesResponseSchema:
+        if series_id:
+            return SeriesResponseSchema(**await self.collection.find_one({"_id": ObjectId(series_id)}))
+        elif series_slug:
+            return SeriesResponseSchema(**await self.collection.find_one({"slug": series_slug}))
 
     async def update_series(self, user_id: str, series_id: str, series: SeriesCreateSchema)->None:
         await self.collection.update_one(

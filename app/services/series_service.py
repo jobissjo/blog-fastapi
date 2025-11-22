@@ -47,6 +47,12 @@ class SeriesService:
             success=True, message="Series fetched successfully", data=response_data
         )
 
+    async def get_series_by_slug(self, series_slug: str) -> SeriesDetailResponseSchema:
+        response_data = await self.repository.get_series_by_id(series_slug=series_slug)
+        return SeriesDetailResponseSchema(
+            success=True, message="Series fetched successfully", data=response_data
+        )
+
     async def update_series(
         self, user_id: str, series_id: str, series: SeriesUpdateSchema
     ):

@@ -67,7 +67,7 @@ class BlogService:
         )
         await self.repository.update_blog(blog_id, token.id, blog_data)
         blog_updated_instance = await self.repository.get_blog_by_id(blog_id, token.id)
-        return BlogDetailResponseSchema(success=True, message="Blog updated successfully", data=blog_updated_instance)
+        return BlogDetailResponseSchema(data=blog_updated_instance, success=True, message="Blog updated successfully")
 
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.repository.delete_blog(blog_id, token.id)
