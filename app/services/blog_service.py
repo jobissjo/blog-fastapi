@@ -4,8 +4,16 @@ from typing import Optional
 from app.schemas.common import BaseResponseSchema
 from app.services.cloudinary_service import CloudinaryService
 from app.services.common_service import CommonService
-from app.schemas.blog_schema import BlogCreateFileSchema, BlogCreateSchema, BlogListResponseSchema, BlogDetailResponseSchema
+from app.schemas.blog_schema import (
+    BlogCreateFileSchema,
+    BlogCreateSchema,
+    BlogUpdateSchema,
+    BlogListResponseSchema,
+    BlogDetailResponseSchema,
+)
 from fastapi import HTTPException
+
+BLOG_NOT_FOUND_MESSAGE = "Blog not found"
 
 class BlogService:
     def __init__(self):
@@ -44,13 +52,13 @@ class BlogService:
     async def blog_details(self, blog_slug: str)->BlogDetailResponseSchema:
         data = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
         if not data:
-            raise HTTPException(status_code=404, detail="Blog not found")
+            raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
         return BlogDetailResponseSchema(data=data, success=True, message="Blog details")
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         blog_instance = await self.repository.get_blog_by_id(blog_id, token.id)
         if not blog_instance:
-            raise HTTPException(status_code=404, detail="Blog not found")
+            raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
         if blog.thumbnail:
             thumbnail = await self.cloudinary_service.upload_image(blog.thumbnail)
             thumbnail = thumbnail.get("url")
@@ -68,6 +76,25 @@ class BlogService:
         await self.repository.update_blog(blog_id, token.id, blog_data)
         blog_updated_instance = await self.repository.get_blog_by_id(blog_id, token.id)
         return BlogDetailResponseSchema(data=blog_updated_instance, success=True, message="Blog updated successfully")
+
+    async def patch_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogUpdateSchema):
+        blog_instance = await self.repository.get_blog_by_id(blog_id, token.id)
+        if not blog_instance:
+            raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
+        update_payload = blog.model_dump(exclude_none=True)
+        if not update_payload:
+            return BlogDetailResponseSchema(
+                data=blog_instance,
+                success=True,
+                message="No changes supplied",
+            )
+        await self.repository.patch_blog(blog_id, token.id, update_payload)
+        updated_blog = await self.repository.get_blog_by_id(blog_id, token.id)
+        return BlogDetailResponseSchema(
+            data=updated_blog,
+            success=True,
+            message="Blog updated successfully",
+        )
 
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.repository.delete_blog(blog_id, token.id)

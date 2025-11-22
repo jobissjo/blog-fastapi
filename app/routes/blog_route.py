@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from app.services.common_service import CommonService
 from app.schemas.user_schema import UserTokenDecodedData
 from app.controllers.blog_controller import BlogController
-from app.schemas.blog_schema import  BlogCreateFileSchema
+from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
 
@@ -57,6 +57,16 @@ async def update_blog(
     controller: BlogController = Depends(BlogController),
 ):
     return await controller.update_blog(token, blog_id, blog)
+
+
+@router.patch("/{blog_id}")
+async def patch_blog(
+    blog_id: str,
+    blog: BlogUpdateSchema,
+    token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
+    controller: BlogController = Depends(BlogController),
+):
+    return await controller.patch_blog(token, blog_id, blog)
 
 
 @router.delete("/{blog_id}")

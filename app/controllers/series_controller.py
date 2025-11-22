@@ -1,14 +1,14 @@
-from optparse import Option
 from app.services.series_service import SeriesService
 from app.schemas.user_schema import UserTokenDecodedData
 from typing import Optional
+from app.schemas.series_schema import SeriesCreateSchema, SeriesUpdateSchema, SeriesPatchSchema
 
 
 class SeriesController:
     def __init__(self):
         self.service = SeriesService()
 
-    async def create_series(self, series, token: UserTokenDecodedData):
+    async def create_series(self, series: SeriesCreateSchema, token: UserTokenDecodedData):
         return await self.service.create_series(series, token.id)
 
     async def get_all_series(
@@ -32,8 +32,11 @@ class SeriesController:
     ):
         return await self.service.get_your_series(token.id, skip, limit, search, published)
 
-    async def update_series(self, token: UserTokenDecodedData, series_id: str, series):
+    async def update_series(self, token: UserTokenDecodedData, series_id: str, series: SeriesUpdateSchema):
         return await self.service.update_series(token.id, series_id, series)
+
+    async def patch_series(self, token: UserTokenDecodedData, series_id: str, series: SeriesPatchSchema):
+        return await self.service.patch_series(token.id, series_id, series)
 
     async def delete_series(self, token: UserTokenDecodedData, series_id: str):
         return await self.service.delete_series(token.id, series_id)

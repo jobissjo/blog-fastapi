@@ -19,6 +19,13 @@ class SeriesUpdateSchema(BaseSeriesSchema):
     pass
 
 
+class SeriesPatchSchema(BaseModel):
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    description: Optional[str] = None
+    published: Optional[bool] = None
+
+
 class SeriesResponseSchema(BaseSeriesSchema):
     id: PyObjectId = Field(alias="_id")
     created_at: Optional[str]

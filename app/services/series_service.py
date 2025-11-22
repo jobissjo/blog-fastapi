@@ -1,6 +1,10 @@
 from app.repositories.series_repository import SeriesRepository
 from app.schemas.common import BaseResponseSchema
-from app.schemas.series_schema import SeriesCreateSchema, SeriesUpdateSchema
+from app.schemas.series_schema import (
+    SeriesCreateSchema,
+    SeriesUpdateSchema,
+    SeriesPatchSchema,
+)
 from fastapi import HTTPException
 from app.schemas.user_schema import UserTokenDecodedData
 from typing import Optional, List
@@ -8,6 +12,8 @@ from app.schemas.series_schema import (
     SeriesListResponseSchema,
     SeriesDetailResponseSchema,
 )
+
+SERIES_NOT_FOUND_MESSAGE = "Series not found"
 
 
 class SeriesService:
@@ -58,14 +64,35 @@ class SeriesService:
     ):
         series_response = await self.repository.get_series_by_id(series_id)
         if series_response is None:
-            raise HTTPException(status_code=404, detail="Series not found")
+            raise HTTPException(status_code=404, detail=SERIES_NOT_FOUND_MESSAGE)
         await self.repository.update_series(user_id, series_id, series)
         return BaseResponseSchema(
             success=True, message="Series updated successfully", data=None
         )
 
+    async def patch_series(
+        self, user_id: str, series_id: str, series: SeriesPatchSchema
+    ) -> SeriesDetailResponseSchema:
+        series_response = await self.repository.get_series_by_id(series_id)
+        if series_response is None:
+            raise HTTPException(status_code=404, detail=SERIES_NOT_FOUND_MESSAGE)
+        update_payload = series.model_dump(exclude_none=True)
+        if not update_payload:
+            return SeriesDetailResponseSchema(
+                success=True,
+                message="No changes supplied",
+                data=series_response,
+            )
+        await self.repository.patch_series(user_id, series_id, update_payload)
+        updated_series = await self.repository.get_series_by_id(series_id)
+        return SeriesDetailResponseSchema(
+            success=True,
+            message="Series updated successfully",
+            data=updated_series,
+        )
+
     async def delete_series(self, user_id: str, series_id: str):
         series_response = await self.repository.get_series_by_id(series_id)
         if series_response is None:
-            raise HTTPException(status_code=404, detail="Series not found")
+            raise HTTPException(status_code=404, detail=SERIES_NOT_FOUND_MESSAGE)
         return await self.repository.delete_series(user_id, series_id)

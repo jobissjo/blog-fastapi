@@ -43,7 +43,25 @@ class SeriesRepository:
 
     async def update_series(self, user_id: str, series_id: str, series: SeriesCreateSchema)->None:
         await self.collection.update_one(
-            {"_id": ObjectId(series_id), "user_id": ObjectId(user_id)}, {"$set": series.model_dump()}
+            {"_id": ObjectId(series_id), "user_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    **series.model_dump(),
+                    "updated_at": datetime.now().isoformat(),
+                }
+            },
+        )
+
+    async def patch_series(self, user_id: str, series_id: str, updates: dict)->None:
+        if not updates:
+            return
+        updates_with_meta = {
+            **updates,
+            "updated_at": datetime.now().isoformat(),
+        }
+        await self.collection.update_one(
+            {"_id": ObjectId(series_id), "user_id": ObjectId(user_id)},
+            {"$set": updates_with_meta},
         )
 
     async def delete_series(self, user_id: str, series_id: str)->None:
