@@ -21,7 +21,7 @@ async def get_your_blogs(
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):
-    return controller.your_blogs(token)
+    return await controller.your_blogs(token)
 
 @router.get("/your/{blog_id}")
 async def get_your_blog_by_id(
@@ -29,7 +29,7 @@ async def get_your_blog_by_id(
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):
-    return controller.your_blog_by_id(token, blog_id)
+    return await controller.your_blog_by_id(token, blog_id)
 
 
 @router.get("/")
@@ -39,14 +39,14 @@ async def get_all_blogs(
     limit: int = 10,
     controller: BlogController = Depends(BlogController),
 ):
-    return controller.all_blogs(is_paginated, skip, limit)
+    return await controller.all_blogs(is_paginated, skip, limit)
 
 
 @router.get("/{blog_id}")
 async def get_blog_by_id(
     blog_id: str, controller: BlogController = Depends(BlogController)
 ):
-    return controller.blog_details(blog_id)
+    return await controller.blog_details(blog_id)
 
 
 @router.put("/{blog_id}")
@@ -56,7 +56,7 @@ async def update_blog(
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):
-    return controller.update_blog(token, blog_id, blog)
+    return await controller.update_blog(token, blog_id, blog)
 
 
 @router.delete("/{blog_id}")
@@ -65,4 +65,4 @@ async def delete_blog(
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):
-    return controller.delete_blog(token, blog_id)
+    return await controller.delete_blog(token, blog_id)

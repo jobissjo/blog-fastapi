@@ -47,6 +47,17 @@ class BlogResponseSchema(BaseModel):
     updated_at: str
     tags: List[str]
     series_id: Optional[str] = None
-    likes: int
+    likes: Optional[int] = 0
 
     model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True, json_encoders={ObjectId: str})
+
+class BlogDetailResponseSchema(BaseModel):
+    data: BlogResponseSchema
+    success: bool
+    message: str
+
+class BlogListResponseSchema(BaseModel):
+    data: List[BlogResponseSchema]
+    total: int
+    success: bool
+    message: str

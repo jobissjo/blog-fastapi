@@ -4,8 +4,8 @@ from typing import Optional
 from app.schemas.common import BaseResponseSchema
 from app.services.cloudinary_service import CloudinaryService
 from app.services.common_service import CommonService
-from app.schemas.blog_schema import BlogCreateFileSchema, BlogCreateSchema
-
+from app.schemas.blog_schema import BlogCreateFileSchema, BlogCreateSchema, BlogListResponseSchema, BlogDetailResponseSchema
+from fastapi import HTTPException
 
 class BlogService:
     def __init__(self):
@@ -29,22 +29,28 @@ class BlogService:
         await self.repository.create_blog(blog_data, token.id)
         return BaseResponseSchema(success=True, message="Blog created successfully")
 
-    async def your_blogs(self, token: UserTokenDecodedData, published: Optional[bool] = None):
-        return await self.repository.get_all_blogs(user_id=token.id, published=published)
+    async def your_blogs(self, token: UserTokenDecodedData, published: Optional[bool] = None)->BlogListResponseSchema:
+        data = await self.repository.get_all_blogs(user_id=token.id, published=published)
+        return BlogListResponseSchema(data=data, total=len(data), success=True, message="Your blogs")
 
-    async def your_blog_by_id(self, token: UserTokenDecodedData, blog_id: str):
-        return await self.repository.get_blog_by_id(blog_id, token.id)
+    async def your_blog_by_id(self, token: UserTokenDecodedData, blog_id: str)->BlogDetailResponseSchema:
+        data = await self.repository.get_blog_by_id(blog_id, token.id)
+        return BlogDetailResponseSchema(data=data, success=True, message="Blog details")
 
-    async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10):
-        return await self.repository.get_all_blogs(is_paginated, skip, limit, published=True)
+    async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10)->BlogListResponseSchema:
+        data = await self.repository.get_all_blogs(is_paginated, skip, limit, published=True)
+        return BlogListResponseSchema(data=data, total=len(data), success=True, message="All blogs")
 
-    async def blog_details(self, blog_id: str):
-        return await self.repository.get_blog_by_id(blog_id, published=True)
+    async def blog_details(self, blog_slug: str)->BlogDetailResponseSchema:
+        data = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
+        if not data:
+            raise HTTPException(status_code=404, detail="Blog not found")
+        return BlogDetailResponseSchema(data=data, success=True, message="Blog details")
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         self.repository.update_blog(token, blog_id, blog)
         return BaseResponseSchema(success=True, message="Blog updated successfully")
 
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
-        await self.repository.delete_blog(token, blog_id)
+        await self.repository.delete_blog(blog_id, token.id)
         return BaseResponseSchema(success=True, message="Blog deleted successfully")
