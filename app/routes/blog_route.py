@@ -2,17 +2,18 @@ from fastapi import APIRouter, Depends
 from app.services.common_service import CommonService
 from app.schemas.user_schema import UserTokenDecodedData
 from app.controllers.blog_controller import BlogController
-from app.schemas.blog_schema import BlogCreateSchema
+from app.schemas.blog_schema import  BlogCreateFileSchema
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
 
 
 @router.post("/")
 async def create_blog(
+    blog: BlogCreateFileSchema = Depends(BlogCreateFileSchema),
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):
-    return controller.create_blog(token)
+    return await controller.create_blog(token, blog)
 
 
 @router.get("/your")
@@ -51,7 +52,7 @@ async def get_blog_by_id(
 @router.put("/{blog_id}")
 async def update_blog(
     blog_id: str,
-    blog: BlogCreateSchema,
+    blog: BlogCreateFileSchema = Depends(BlogCreateFileSchema),
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):

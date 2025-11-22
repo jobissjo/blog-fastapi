@@ -2,6 +2,28 @@ from typing import List, Optional
 from pydantic import BaseModel, Field, ConfigDict
 from app.schemas.common import PyObjectId
 from bson import ObjectId
+from fastapi import Form, File, UploadFile
+
+
+class BlogCreateFileSchema:
+    def __init__(
+        self,
+        title: str = Form(...),
+        slug: str = Form(...),
+        content: str = Form(...),
+        published: bool = Form(False),
+        tags: List[str] = Form(default_factory=list),
+        series_id: Optional[str] = Form(None),
+        thumbnail: UploadFile = File(...)
+    ):
+        self.title = title
+        self.slug = slug
+        self.content = content
+        self.published = published
+        self.tags = tags
+        self.series_id = series_id
+        self.thumbnail = thumbnail
+
 
 class BlogCreateSchema(BaseModel):
     title: str

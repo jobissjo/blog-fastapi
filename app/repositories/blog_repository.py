@@ -8,9 +8,9 @@ class BlogRepository:
     def __init__(self):
         self.collection = db.blogs
 
-    async def create_blog(self, blog: BlogCreateSchema):
+    async def create_blog(self, blog: BlogCreateSchema, user_id: str):
         await self.collection.insert_one(
-            {**blog.model_dump(), "user_id": ObjectId(blog.user_id)}
+            {**blog.model_dump(), "user_id": ObjectId(user_id)}
         )
 
     async def get_all_blogs(
@@ -45,11 +45,16 @@ class BlogRepository:
             query.update({"published": published})
 
         if is_paginate:
-            return (
-                await self.collection.find(query).skip(skip).limit(limit).to_list(limit)
+            result = (
+                self.collection.find(query).skip(skip).limit(limit).to_list(limit)
             )
         else:
-            return await self.collection.find(query).to_list(max_limit)
+            result = self.collection.find(query).to_list(max_limit)
+        print(result, "result")
+        results = []
+        async for doc in result:
+            results.append(BlogResponseSchema(**doc))
+        return results
 
     async def get_blog_by_id(
         self, blog_id: str, user_id: str = None, published: Optional[bool] = None
