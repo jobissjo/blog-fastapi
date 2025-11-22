@@ -10,7 +10,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.schemas.user_schema import UserTokenDecodedData
 from app.core.settings import settings
-from app.utils import CustomException
+from fastapi.exceptions import HTTPException
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/token")
 
@@ -72,15 +72,15 @@ class CommonService:
             )
             print(payload, "payload")
             if payload.get("token_type") != "refresh":
-                raise CustomException("Invalid token type", status_code=401)
+                raise HTTPException(detail="Invalid token type", status_code=401)
             user_id: int = payload.get("user_id")
             if user_id is None:
-                raise CustomException("Token is missing user id", status_code=401)
+                raise HTTPException(detail="Token is missing user id", status_code=401)
             return payload
         except jwt.ExpiredSignatureError:
-            raise CustomException("Token has expired", status_code=401)
+            raise HTTPException(detail="Token has expired", status_code=401)
         except jwt.PyJWTError as e:
-            raise CustomException(f"Token is invalid: {e}", status_code=401)
+            raise HTTPException(detail=f"Token is invalid: {e}", status_code=401)
 
     @staticmethod
     async def verify_token_get_user(
@@ -92,16 +92,16 @@ class CommonService:
             )
             print(payload, "payload")
             if payload.get("token_type") != "access":
-                raise CustomException("Invalid token type", status_code=401)
+                raise HTTPException(detail="Invalid token type", status_code=401)
             user_id: str = payload.get("id")
             if user_id is None:
-                raise CustomException("Token is missing user id", status_code=401)
+                raise HTTPException(detail="Token is missing user id", status_code=401)
             return UserTokenDecodedData(**payload)
 
         except jwt.ExpiredSignatureError:
-            raise CustomException("Token has expired", status_code=401)
+            raise HTTPException(detail="Token has expired", status_code=401)
         except jwt.PyJWTError as e:
-            raise CustomException(f"Token is invalid: {e}", status_code=401)
+            raise HTTPException(detail=f"Token is invalid: {e}", status_code=401)
 
 
     @staticmethod

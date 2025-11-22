@@ -2,15 +2,21 @@ from app.core.db_config import db
 from bson import ObjectId
 from typing import List, Optional
 from app.schemas.blog_schema import BlogCreateSchema, BlogResponseSchema
+from datetime import datetime
 
 
 class BlogRepository:
     def __init__(self):
         self.collection = db.blogs
 
-    async def create_blog(self, blog: BlogCreateSchema):
+    async def create_blog(self, blog: BlogCreateSchema, user_id: str):
         await self.collection.insert_one(
-            {**blog.model_dump(), "user_id": ObjectId(blog.user_id)}
+            {
+                **blog.model_dump(),
+                "user_id": ObjectId(user_id),
+                "created_at": datetime.now().isoformat(),
+                "updated_at": datetime.now().isoformat(),
+            }
         )
 
     async def get_all_blogs(
@@ -45,16 +51,24 @@ class BlogRepository:
             query.update({"published": published})
 
         if is_paginate:
-            return (
-                await self.collection.find(query).skip(skip).limit(limit).to_list(limit)
+            result = (
+                self.collection.find(query).skip(skip).limit(limit)
             )
         else:
-            return await self.collection.find(query).to_list(max_limit)
+            result = self.collection.find(query).limit(max_limit)
+        results = []
+        async for doc in result:
+            results.append(BlogResponseSchema(**doc))
+        return results
 
     async def get_blog_by_id(
-        self, blog_id: str, user_id: str = None, published: Optional[bool] = None
+        self, blog_id: str=None, user_id: str = None, published: Optional[bool] = None,
+        blog_slug: str = None
     ) -> BlogResponseSchema | None:
-        query = {"_id": ObjectId(blog_id)}
+        if blog_id:
+            query = {"_id": ObjectId(blog_id)}
+        if blog_slug:
+            query = {"slug": blog_slug}
         if user_id:
             query.update({"user_id": ObjectId(user_id)})
         if published is not None:
