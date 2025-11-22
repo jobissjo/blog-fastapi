@@ -48,8 +48,26 @@ class BlogService:
         return BlogDetailResponseSchema(data=data, success=True, message="Blog details")
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
-        self.repository.update_blog(token, blog_id, blog)
-        return BaseResponseSchema(success=True, message="Blog updated successfully")
+        blog_instance = await self.repository.get_blog_by_id(blog_id, token.id)
+        if not blog_instance:
+            raise HTTPException(status_code=404, detail="Blog not found")
+        if blog.thumbnail:
+            thumbnail = await self.cloudinary_service.upload_image(blog.thumbnail)
+            thumbnail = thumbnail.get("url")
+        else:
+            thumbnail = blog_instance.thumbnail
+        blog_data = BlogCreateSchema(
+            title=blog.title,
+            slug=blog.slug,
+            content=blog.content,
+            thumbnail=thumbnail,
+            published=blog.published,
+            tags=blog.tags,
+            series_id=blog.series_id,
+        )
+        await self.repository.update_blog(blog_id, token.id, blog_data)
+        blog_updated_instance = await self.repository.get_blog_by_id(blog_id, token.id)
+        return BlogDetailResponseSchema(success=True, message="Blog updated successfully", data=blog_updated_instance)
 
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.repository.delete_blog(blog_id, token.id)

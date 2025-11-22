@@ -14,7 +14,7 @@ class BlogCreateFileSchema:
         published: bool = Form(False),
         tags: List[str] = Form(default_factory=list),
         series_id: Optional[str] = Form(None),
-        thumbnail: UploadFile = File(...)
+        thumbnail: Optional[UploadFile] = File(None)
     ):
         self.title = title
         self.slug = slug
