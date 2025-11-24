@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Depends
 from app.controllers.series_controller import SeriesController
-from app.schemas.series_schema import SeriesCreateSchema, SeriesUpdateSchema
+from app.schemas.series_schema import SeriesCreateSchema, SeriesUpdateSchema, SeriesPatchSchema
 from app.services.common_service import CommonService
 from app.schemas.user_schema import UserTokenDecodedData
 
@@ -64,6 +64,16 @@ async def update_series(
     controller: SeriesController = Depends(SeriesController),
 ):
     return await controller.update_series(token, series_id, series)
+
+
+@router.patch("/{series_id}")
+async def patch_series(
+    series_id: str,
+    series: SeriesPatchSchema,
+    token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
+    controller: SeriesController = Depends(SeriesController),
+):
+    return await controller.patch_series(token, series_id, series)
 
 
 @router.delete("/{series_id}")

@@ -81,7 +81,25 @@ class BlogRepository:
     async def update_blog(self, blog_id: str, user_id: str, blog: BlogCreateSchema):
         await self.collection.update_one(
             {"_id": ObjectId(blog_id), "user_id": ObjectId(user_id)},
-            {"$set": {**blog.model_dump(), "user_id": ObjectId(user_id)}},
+            {
+                "$set": {
+                    **blog.model_dump(),
+                    "user_id": ObjectId(user_id),
+                    "updated_at": datetime.now().isoformat(),
+                }
+            },
+        )
+
+    async def patch_blog(self, blog_id: str, user_id: str, updates: dict):
+        if not updates:
+            return
+        updates_with_meta = {
+            **updates,
+            "updated_at": datetime.now().isoformat(),
+        }
+        await self.collection.update_one(
+            {"_id": ObjectId(blog_id), "user_id": ObjectId(user_id)},
+            {"$set": updates_with_meta},
         )
 
     async def delete_blog(self, blog_id: str, user_id: str):

@@ -1,6 +1,6 @@
 from app.services.blog_service import BlogService
 from app.schemas.user_schema import UserTokenDecodedData
-from app.schemas.blog_schema import BlogCreateFileSchema
+from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema
 
 class BlogController:
     def __init__(self):
@@ -23,6 +23,9 @@ class BlogController:
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         return await self.service.update_blog(token, blog_id, blog)
-    
+
+    async def patch_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogUpdateSchema):
+        return await self.service.patch_blog(token, blog_id, blog)
+
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.service.delete_blog(token, blog_id)

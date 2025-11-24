@@ -36,6 +36,15 @@ class BlogCreateSchema(BaseModel):
 
     
 
+class BlogUpdateSchema(BaseModel):
+    title: Optional[str] = None
+    slug: Optional[str] = None
+    content: Optional[str] = None
+    thumbnail: Optional[str] = None
+    published: Optional[bool] = None
+    tags: Optional[List[str]] = None
+    series_id: Optional[str] = None
+
 class BlogResponseSchema(BaseModel):
     id: PyObjectId = Field(alias="_id")
     title: str
