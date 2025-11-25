@@ -55,7 +55,7 @@ class BlogResponseSchema(BaseModel):
     created_at: str
     updated_at: str
     tags: List[str]
-    series_id: Optional[str] = None
+    series_id: Optional[PyObjectId] = None
     likes: Optional[int] = 0
 
     model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True, json_encoders={ObjectId: str})

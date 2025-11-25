@@ -14,6 +14,7 @@ class BlogRepository:
             {
                 **blog.model_dump(),
                 "user_id": ObjectId(user_id),
+                "series_id": ObjectId(blog.series_id) if blog.series_id else None,
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
             }
