@@ -33,6 +33,7 @@ class BlogCreateSchema(BaseModel):
     published: bool = False
     tags: List[str] = Field(default_factory=list)
     series_id: Optional[str] = None
+    view_count: int = 0
 
     
 
@@ -57,6 +58,7 @@ class BlogResponseSchema(BaseModel):
     tags: List[str]
     series_id: Optional[PyObjectId] = None
     likes: Optional[int] = 0
+    view_count: int = 0
 
     model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True, json_encoders={ObjectId: str})
 

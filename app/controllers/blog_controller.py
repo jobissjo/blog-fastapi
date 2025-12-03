@@ -1,3 +1,4 @@
+from typing import Optional
 from app.services.blog_service import BlogService
 from app.schemas.user_schema import UserTokenDecodedData
 from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema
@@ -18,8 +19,8 @@ class BlogController:
     async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10):
         return await self.service.all_blogs(is_paginated, skip, limit)
     
-    async def blog_details(self, blog_id: str):
-        return await self.service.blog_details(blog_id)
+    async def blog_details(self, blog_id: str, visitor_id: Optional[str] = None):
+        return await self.service.blog_details(blog_id, visitor_id)
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         return await self.service.update_blog(token, blog_id, blog)
