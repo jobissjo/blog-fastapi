@@ -3,7 +3,6 @@ from app.schemas.user_schema import UserTokenDecodedData
 from typing import Optional
 from app.schemas.common import BaseResponseSchema
 from app.services.cloudinary_service import CloudinaryService
-from app.services.common_service import CommonService
 from app.schemas.blog_schema import (
     BlogCreateFileSchema,
     BlogCreateSchema,
@@ -33,6 +32,7 @@ class BlogService:
             published=blog.published,
             tags=blog.tags,
             series_id=blog.series_id,
+            view_count=0,
         )
         await self.repository.create_blog(blog_data, token.id)
         return BaseResponseSchema(success=True, message="Blog created successfully")
@@ -49,11 +49,13 @@ class BlogService:
         data = await self.repository.get_all_blogs(is_paginated, skip, limit, published=True)
         return BlogListResponseSchema(data=data, total=len(data), success=True, message="All blogs")
 
-    async def blog_details(self, blog_slug: str)->BlogDetailResponseSchema:
+    async def blog_details(self, blog_slug: str, visitor_id: Optional[str] = None)->BlogDetailResponseSchema:
         data = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
         if not data:
             raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
-        return BlogDetailResponseSchema(data=data, success=True, message="Blog details")
+        await self.repository.increment_view_count(blog_slug=blog_slug, visitor_id=visitor_id)
+        updated_data = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
+        return BlogDetailResponseSchema(data=updated_data, success=True, message="Blog details")
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         blog_instance = await self.repository.get_blog_by_id(blog_id, token.id)
@@ -72,6 +74,7 @@ class BlogService:
             published=blog.published,
             tags=blog.tags,
             series_id=blog.series_id,
+            view_count=blog_instance.view_count,
         )
         await self.repository.update_blog(blog_id, token.id, blog_data)
         blog_updated_instance = await self.repository.get_blog_by_id(blog_id, token.id)
@@ -82,6 +85,7 @@ class BlogService:
         if not blog_instance:
             raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
         update_payload = blog.model_dump(exclude_none=True)
+        update_payload.pop("view_count", None)
         if not update_payload:
             return BlogDetailResponseSchema(
                 data=blog_instance,

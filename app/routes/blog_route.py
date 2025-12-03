@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
+from typing import Optional
+from fastapi import APIRouter, Depends, Request, Response
 from app.services.common_service import CommonService
 from app.schemas.user_schema import UserTokenDecodedData
 from app.controllers.blog_controller import BlogController
 from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema
+from app.utils.visitor import get_or_set_visitor_id
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
 
@@ -44,9 +46,13 @@ async def get_all_blogs(
 
 @router.get("/{blog_id}")
 async def get_blog_by_id(
-    blog_id: str, controller: BlogController = Depends(BlogController)
+    blog_id: str,
+    request: Request,
+    response: Response,
+    controller: BlogController = Depends(BlogController),
 ):
-    return await controller.blog_details(blog_id)
+    visitor_id = get_or_set_visitor_id(request, response)
+    return await controller.blog_details(blog_id, visitor_id)
 
 
 @router.put("/{blog_id}")

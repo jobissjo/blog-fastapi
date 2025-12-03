@@ -8,6 +8,7 @@ from datetime import datetime
 class BlogRepository:
     def __init__(self):
         self.collection = db.blogs
+        self.view_collection = db.blog_views
 
     async def create_blog(self, blog: BlogCreateSchema, user_id: str):
         await self.collection.insert_one(
@@ -15,6 +16,7 @@ class BlogRepository:
                 **blog.model_dump(),
                 "user_id": ObjectId(user_id),
                 "series_id": ObjectId(blog.series_id) if blog.series_id else None,
+                "view_count": 0,
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
             }
@@ -101,6 +103,31 @@ class BlogRepository:
         await self.collection.update_one(
             {"_id": ObjectId(blog_id), "user_id": ObjectId(user_id)},
             {"$set": updates_with_meta},
+        )
+
+    async def increment_view_count(self, blog_slug: str, visitor_id: Optional[str] = None):
+        blog = await self.collection.find_one({"slug": blog_slug})
+        if not blog:
+            return
+        if visitor_id:
+            existing = await self.view_collection.find_one(
+                {"blog_slug": blog_slug, "visitor_id": visitor_id}
+            )
+            if existing:
+                return
+            await self.view_collection.insert_one(
+                {
+                    "blog_slug": blog_slug,
+                    "visitor_id": visitor_id,
+                    "viewed_at": datetime.now().isoformat(),
+                }
+            )
+        await self.collection.update_one(
+            {"_id": blog["_id"]},
+            {
+                "$inc": {"view_count": 1},
+                "$set": {"updated_at": datetime.now().isoformat()},
+            },
         )
 
     async def delete_blog(self, blog_id: str, user_id: str):
