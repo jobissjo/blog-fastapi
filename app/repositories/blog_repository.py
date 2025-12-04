@@ -9,6 +9,7 @@ class BlogRepository:
     def __init__(self):
         self.collection = db.blogs
         self.view_collection = db.blog_views
+        self.like_collection = db.blog_likes
 
     async def create_blog(self, blog: BlogCreateSchema, user_id: str):
         await self.collection.insert_one(
@@ -17,6 +18,7 @@ class BlogRepository:
                 "user_id": ObjectId(user_id),
                 "series_id": ObjectId(blog.series_id) if blog.series_id else None,
                 "view_count": 0,
+                "likes": 0,
                 "created_at": datetime.now().isoformat(),
                 "updated_at": datetime.now().isoformat(),
             }
@@ -126,6 +128,36 @@ class BlogRepository:
             {"_id": blog["_id"]},
             {
                 "$inc": {"view_count": 1},
+                "$set": {"updated_at": datetime.now().isoformat()},
+            },
+        )
+    
+
+    async def check_liked_blog(self, blog_id: str, visitor_id: str) -> bool:
+        existing = await self.like_collection.find_one(
+            {"blog_id": ObjectId(blog_id), "visitor_id": visitor_id}
+        )
+        return bool(existing)
+
+    async def add_like(self, blog_id: str, visitor_id: Optional[str] = None):
+
+        if visitor_id:
+            existing = await self.like_collection.find_one(
+                {"blog_id": ObjectId(blog_id), "visitor_id": visitor_id}
+            )
+            if existing:
+                return
+            await self.like_collection.insert_one(
+                {
+                    "blog_id": blog_id,
+                    "visitor_id": visitor_id,
+                    "liked_at": datetime.now().isoformat(),
+                }
+            )
+        await self.collection.update_one(
+            {"_id": blog_id},
+            {
+                "$inc": {"likes": 1},
                 "$set": {"updated_at": datetime.now().isoformat()},
             },
         )

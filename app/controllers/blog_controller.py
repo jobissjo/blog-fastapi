@@ -22,6 +22,9 @@ class BlogController:
     async def blog_details(self, blog_id: str, visitor_id: Optional[str] = None):
         return await self.service.blog_details(blog_id, visitor_id)
 
+    async def like_blog(self, blog_slug: str, visitor_id: Optional[str] = None):
+        return await self.service.like_blog(blog_slug, visitor_id)
+
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         return await self.service.update_blog(token, blog_id, blog)
 

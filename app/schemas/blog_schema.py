@@ -59,6 +59,7 @@ class BlogResponseSchema(BaseModel):
     series_id: Optional[PyObjectId] = None
     likes: Optional[int] = 0
     view_count: int = 0
+    liked: Optional[bool] = False
 
     model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True, json_encoders={ObjectId: str})
 

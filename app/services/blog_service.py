@@ -55,7 +55,20 @@ class BlogService:
             raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
         await self.repository.increment_view_count(blog_slug=blog_slug, visitor_id=visitor_id)
         updated_data = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
+        is_liked = await self.repository.check_liked_blog(blog_id=data.id, visitor_id=visitor_id)
+        print(  "is_liked:", is_liked)
+        updated_data.liked = is_liked
         return BlogDetailResponseSchema(data=updated_data, success=True, message="Blog details")
+
+    async def like_blog(self, blog_slug: str, visitor_id: Optional[str] = None):
+        data = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
+        if not data:
+            raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
+        await self.repository.add_like(blog_id=data.id, visitor_id=visitor_id)
+        updated = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
+        if not updated:
+            raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
+        return BlogDetailResponseSchema(data=updated, success=True, message="Blog liked")
 
     async def update_blog(self, token: UserTokenDecodedData, blog_id: str, blog: BlogCreateFileSchema):
         blog_instance = await self.repository.get_blog_by_id(blog_id, token.id)
