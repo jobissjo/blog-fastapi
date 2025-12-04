@@ -55,6 +55,17 @@ async def get_blog_by_id(
     return await controller.blog_details(blog_id, visitor_id)
 
 
+@router.post("/{blog_slug}/like")
+async def like_blog(
+    blog_slug: str,
+    request: Request,
+    response: Response,
+    controller: BlogController = Depends(BlogController),
+):
+    visitor_id = get_or_set_visitor_id(request, response)
+    return await controller.like_blog(blog_slug, visitor_id)
+
+
 @router.put("/{blog_id}")
 async def update_blog(
     blog_id: str,

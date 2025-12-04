@@ -8,6 +8,12 @@ class BaseResponseSchema(BaseModel):
     success: bool
     message: str
 
+class VisitorSchema(BaseModel):
+    visitor_id: str
+
+class VisitorResponseSchema(BaseResponseSchema):
+    data: VisitorSchema
+
 class PyObjectId(ObjectId):
     @classmethod
     def __get_validators__(cls):
