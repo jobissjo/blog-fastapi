@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.schemas.common import BaseResponseSchema
+from app.schemas.common import BaseResponseSchema, PyObjectId
 
 
 class BaseUserSchema(BaseModel):
@@ -43,3 +43,15 @@ class TokenResponseSchema(BaseModel):
 
 class TokenFinalResponseSchema(BaseResponseSchema):
     data: TokenResponseSchema
+
+
+class UserBasicSchema(BaseModel):
+    id: PyObjectId = Field(alias="_id")
+    first_name: str = Field(..., alias="firstName")
+    last_name: str = Field(..., alias="lastName")
+    email: str = Field(..., alias="email")
+    phone_number: str = Field(..., alias="phoneNumber")
+    username: str = Field(..., alias="username")
+    role: str = Field(..., alias="role")
+
+    model_config = ConfigDict(populate_by_name=True)

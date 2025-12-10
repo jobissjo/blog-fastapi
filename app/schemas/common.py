@@ -22,7 +22,7 @@ class PyObjectId(ObjectId):
     @classmethod
     def validate(cls, v, info=None):
         if isinstance(v, ObjectId):
-            return v
+            return str(v)
         if not ObjectId.is_valid(v):
             raise ValueError("Invalid ObjectId")
         return ObjectId(str(v))

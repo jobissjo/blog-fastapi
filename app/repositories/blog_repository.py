@@ -56,13 +56,39 @@ class BlogRepository:
             query.update({"published": published})
 
         if is_paginate:
-            result = (
-                self.collection.find(query).skip(skip).limit(limit)
-            )
+            pipeline = [
+                {"$match": query},
+                {
+                    "$lookup": {
+                        "from": "users",
+                        "localField": "user_id",
+                        "foreignField": "_id",
+                        "as": "user_details"
+                    }
+                },
+                {"$unwind": {"path": "$user_details", "preserveNullAndEmptyArrays": True}},
+                {"$skip": skip},
+                {"$limit": limit}
+            ]
         else:
-            result = self.collection.find(query).limit(max_limit)
+            pipeline = [
+                {"$match": query},
+                {
+                    "$lookup": {
+                        "from": "users",
+                        "localField": "user_id",
+                        "foreignField": "_id",
+                        "as": "user_details"
+                    }
+                },
+                {"$unwind": {"path": "$user_details", "preserveNullAndEmptyArrays": True}},
+                {"$skip": skip},
+                {"$limit": limit}
+            ]
+        cursor = await self.collection.aggregate(pipeline)
         results = []
-        async for doc in result:
+        async for doc in cursor:
+            print(doc, 'doc')
             results.append(BlogResponseSchema(**doc))
         return results
 
