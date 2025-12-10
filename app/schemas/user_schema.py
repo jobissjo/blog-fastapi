@@ -45,6 +45,17 @@ class TokenFinalResponseSchema(BaseResponseSchema):
     data: TokenResponseSchema
 
 
+class ProfileInfoSchema(BaseModel):
+    bio: Optional[str]
+    profile_picture: Optional[str]
+    cover_picture: Optional[str]
+    resume: Optional[str]
+    portfolio_link: Optional[str]
+
+    model_config = ConfigDict(populate_by_name=True)
+    
+
+
 class UserBasicSchema(BaseModel):
     id: PyObjectId = Field(alias="_id")
     first_name: str = Field(..., alias="firstName")
@@ -53,5 +64,6 @@ class UserBasicSchema(BaseModel):
     phone_number: str = Field(..., alias="phoneNumber")
     username: str = Field(..., alias="username")
     role: str = Field(..., alias="role")
+    profile: Optional[ProfileInfoSchema] = None
 
     model_config = ConfigDict(populate_by_name=True)
