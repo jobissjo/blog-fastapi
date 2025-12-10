@@ -3,6 +3,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from app.schemas.common import PyObjectId
 from bson import ObjectId
 from fastapi import Form, File, UploadFile
+from app.schemas.user_schema import UserBasicSchema
 
 
 class BlogCreateFileSchema:
@@ -60,6 +61,8 @@ class BlogResponseSchema(BaseModel):
     likes: Optional[int] = 0
     view_count: int = 0
     liked: Optional[bool] = False
+    user_id: Optional[PyObjectId] = None
+    user_details: Optional[UserBasicSchema] = None
 
     model_config = ConfigDict(populate_by_name=True, arbitrary_types_allowed=True, json_encoders={ObjectId: str})
 
