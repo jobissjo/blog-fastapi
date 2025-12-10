@@ -82,8 +82,7 @@ class BlogRepository:
                     }
                 },
                 {"$unwind": {"path": "$user_details", "preserveNullAndEmptyArrays": True}},
-                {"$skip": skip},
-                {"$limit": limit}
+                {"$limit": max_limit}
             ]
         cursor = await self.collection.aggregate(pipeline)
         results = []
@@ -104,10 +103,23 @@ class BlogRepository:
             query.update({"user_id": ObjectId(user_id)})
         if published is not None:
             query.update({"published": published})
-        response = await self.collection.find_one(query)
+        pipeline = [
+            {"$match": query},
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "user_id",
+                    "foreignField": "_id",
+                    "as": "user_details"
+                }
+            },
+            {"$unwind": {"path": "$user_details", "preserveNullAndEmptyArrays": True}}
+        ]
+        cursor = await self.collection.aggregate(pipeline)
+        response = await cursor.to_list(1)
         if not response:
             return None
-        return BlogResponseSchema(**response)
+        return BlogResponseSchema(**response[0])
 
     async def update_blog(self, blog_id: str, user_id: str, blog: BlogCreateSchema):
         await self.collection.update_one(
