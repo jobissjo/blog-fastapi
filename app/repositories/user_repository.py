@@ -35,3 +35,9 @@ class UserRepository:
             {"_id": ObjectId(user_id)},
             {"$set": {"profile.profile_picture": profile_picture_url}},
         )
+
+    async def update_user_password(self, user_id: str, password: str):
+        await self.collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": {"password": password}},
+        )

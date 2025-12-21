@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends
 
 from app.controllers.auth_controller import AuthController
-from app.schemas.user_schema import RegisterUserPayloadSchema, LoginUserSchema, TokenFinalResponseSchema, TokenResponseSchema
+from app.schemas.user_schema import RegisterUserPayloadSchema, LoginUserSchema, TokenFinalResponseSchema, TokenResponseSchema, ChangePasswordSchema, UserTokenDecodedData
 from app.schemas.common import BaseResponseSchema
 from fastapi.security import OAuth2PasswordRequestForm
+from app.services.common_service import CommonService
 
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
@@ -29,4 +30,11 @@ async def get_token(
     response = await controller.login_user(LoginUserSchema(email=data.username, password=data.password))
     return response.data
 
+@router.post('/change-password')
+async def change_password(
+    user_data: ChangePasswordSchema,
+    user: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
+    controller: AuthController = Depends(AuthController)
+) -> BaseResponseSchema:
+    return await controller.change_password(user, user_data)
 
