@@ -67,3 +67,8 @@ class UserBasicSchema(BaseModel):
     profile: Optional[ProfileInfoSchema] = None
 
     model_config = ConfigDict(populate_by_name=True)
+
+
+class ChangePasswordSchema(BaseModel):
+    current_password: str = Field(..., alias="currentPassword")
+    new_password: str = Field(..., alias="newPassword")

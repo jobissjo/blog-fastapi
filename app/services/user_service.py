@@ -1,3 +1,4 @@
+from app.schemas.user_schema import UserTokenDecodedData
 from fastapi.exceptions import HTTPException
 from app.core import settings_config as settings
 from app.repositories.user_repository import UserRepository
@@ -8,7 +9,10 @@ from app.schemas.user_schema import (
     LoginUserSchema,
     TokenResponseSchema,
     TokenFinalResponseSchema,
+    ChangePasswordSchema,
+    UserBasicSchema
 )
+from app.schemas.common import BaseResponseSchema
 
 
 class UserService:
@@ -53,3 +57,15 @@ class UserService:
         return TokenFinalResponseSchema(
             data=token_response, success=True, message="User logged in successfully"
         )
+    
+    async def change_password(self, user: UserTokenDecodedData, user_data: ChangePasswordSchema)->BaseResponseSchema:
+        email_exists = await self.repository.get_user_by_email(user.email)
+        if not email_exists:
+            raise HTTPException(status_code=400, detail="User not found")
+        if not await CommonService.verify_password(
+            user_data.current_password, email_exists["password"]
+        ):
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        hashed_password = await CommonService.hash_password(user_data.new_password)
+        await self.repository.update_user_password(email_exists["_id"], hashed_password)
+        return BaseResponseSchema(success=True, message="Password changed successfully")
