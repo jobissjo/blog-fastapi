@@ -9,6 +9,8 @@ from app.schemas.common import BaseResponseSchema
 from app.services.email_service import EmailService
 from app.core.logger_config import logger
 from app.utils.constants import CONTACT_US_TO_PORTFOLIO
+from app.utils.portfolio import get_bot_reply
+from app.schemas.portfolio_schema import ChatRequest, ChatResponse, ChatResponseSchema
 
 
 class PortfolioService:
@@ -57,4 +59,13 @@ class PortfolioService:
             raise HTTPException(status_code=404, detail="Contact Us not found")
         return DetailContactUsResponseSchema(
             data=data, success=True, message="Contact Us retrieved successfully"
+        )
+
+    async def chat(self, data: ChatRequest) -> ChatResponse:
+        data = await get_bot_reply(data.message)
+        response_data = ChatResponse(message=data)
+        return ChatResponseSchema(
+            data=response_data,
+            success=True,
+            message="Chat retrieved successfully",
         )
