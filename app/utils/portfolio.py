@@ -60,18 +60,24 @@ def get_value_from_path(data: Dict[str, Any], path: str):
 
 def format_response(data: Any) -> str:
     if isinstance(data, dict):
-        return "\n".join(f"• {k}: {v}" for k, v in data.items())
+        responses = []
+        for k, v in data.items():
+            if isinstance(v, list):
+                responses.append(f"• {k}: {format_response(v)}")
+            else:
+                responses.append(f"• {k}: {v}")
+        return "\n".join(responses)
 
     if isinstance(data, list):
-        print("data", data)
-        return "\n".join(
-            (
-                f"• {item['name']}: {item.get('description', '')}"
-                if isinstance(item, dict)
-                else f"• {item}"
-            )
-            for item in data
-        )
+        responses = []
+        for item in data:
+            if isinstance(item, dict):
+                responses.append(f"• {item['name']}: {item.get('description', '')}")
+            elif isinstance(item, list):
+                responses.append(f"• {format_response(item)}")
+            else:
+                responses.append(str(item))
+        return "\n".join(responses)
 
     return str(data)
 
