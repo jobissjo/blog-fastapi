@@ -1,0 +1,108 @@
+{
+    "basic": {
+        "name": "Jobi S S",
+        "location": "Kochi, Kerala, India (Open to Relocation)",
+        "summary": "Backend-focused Python Developer with 2+ years of experience building scalable applications using Django, FastAPI, and Flask. Strong in REST APIs, database optimization, WebSockets, and ML integrations.",
+        "briefSummary": "I am Jobi S S, a Backend-focused Python Developer with 2+ years of experience building scalable applications using Django, FastAPI, and Flask. Strong in REST APIs, database optimization, WebSockets, and ML integrations."
+    },
+    "skills": {
+        "languages": [
+            "Python",
+            "JavaScript",
+            "TypeScript"
+        ],
+        "backend": [
+            "Django",
+            "FastAPI",
+            "Flask",
+            "DRF"
+        ],
+        "frontend": [
+            "Angular",
+            "React",
+            "HTML",
+            "CSS",
+            "Bootstrap"
+        ],
+        "databases": [
+            "PostgreSQL",
+            "SQLite",
+            "MongoDB"
+        ],
+        "tools": [
+            "Git",
+            "GitHub",
+            "CI/CD (Basic)",
+            "Docker",
+            "Redis (Basic)"
+        ]
+    },
+    "experience": [
+        {
+            "name": "Software Engineer",
+            "role": "Software Engineer",
+            "company": "Senscript Technologies",
+            "period": "May 2024 - Present",
+            "summary": "Working on backend-heavy applications involving Django, FastAPI, Flask, Angular, and React.",
+            "description": "Working on backend-heavy applications involving Django, FastAPI, Flask, Angular, and React from May 2024 - Present."
+        },
+        {
+            "name": "Python Programmer (Data Scientist)",
+            "role": "Python Programmer (Data Scientist)",
+            "company": "Mentor Thesis",
+            "period": "Mar 2023 - Apr 2024",
+            "summary": "Built ML-based systems including recommendation engines, sentiment analysis, and fault detection models.",
+            "description": "Built ML-based systems including recommendation engines, sentiment analysis, and fault detection models from Mar 2023 - Apr 2024."
+        }
+    ],
+    "projects": [
+        {
+            "name": "3DVix",
+            "description": "Chatbot integration for a 3D e-commerce platform using Django Channels and WebSockets."
+        },
+        {
+            "name": "E-learning Platform",
+            "description": "Built modules, assessments, leaderboards, and video streaming using m3u8."
+        },
+        {
+            "name": "Job Portal",
+            "description": "Angular + FastAPI job portal supporting employer and employee workflows."
+        },
+        {
+            "name": "Personal Blog",
+            "description": "FastAPI backend with Next.js frontend focusing on SEO and clean APIs."
+        }
+    ],
+    "contact": {
+        "email": "jobisjobi1234@gmail.com",
+        "phone": "+91 9745992983",
+        "links": {
+            "linkedin": "https://www.linkedin.com/in/jobiss12/",
+            "github": "https://github.com/jobissjo",
+            "portfolio": "https://jobiss.vercel.app/",
+            "leetcode": "https://leetcode.com/u/jobi_s_s/"
+        },
+        "social_media_links": [
+            {
+                "name": "linkedin",
+                "url": "https://www.linkedin.com/in/jobiss12/",
+                "description": "https://www.linkedin.com/in/jobiss12/"
+            },
+            {
+                "name": "github",
+                "url": "https://github.com/jobissjo",
+                "description": "https://github.com/jobissjo"
+            },
+            {
+                "name": "portfolio",
+                "url": "https://jobiss.vercel.app/",
+                "description": "https://jobiss.vercel.app/"
+            },
+            {
+                "name": "leetcode",
+                "url": "https://leetcode.com/u/jobi_s_s/",
+                "description": "https://leetcode.com/u/jobi_s_s/"
+            }
+        ]
+    }
+}

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from app.schemas.portfolio_schema import ContactUsSchema
+from app.schemas.portfolio_schema import ContactUsSchema, ChatRequest,ChatResponseSchema
 from app.controllers.portfolio_controller import PortfolioController
 from app.services.common_service import CommonService
 from app.schemas.user_schema import UserTokenDecodedData
@@ -36,3 +36,11 @@ async def get_contact_us_by_id(
     _token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
 ):
     return await controller.get_contact_us_by_id(contact_us_id)
+
+
+@router.post("/chat")
+async def chat(
+    data: ChatRequest,
+    controller: PortfolioController = Depends(PortfolioController),
+)->ChatResponseSchema:
+    return await controller.chat(data)

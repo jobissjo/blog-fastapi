@@ -37,3 +37,12 @@ class ListContactUsResponseSchema(BaseResponseSchema):
 class DetailContactUsResponseSchema(BaseResponseSchema):
     data: ContactUsResponseSchema
 
+
+class ChatRequest(BaseModel):
+    message: str
+
+class ChatResponse(BaseModel):
+    message: str
+
+class ChatResponseSchema(BaseResponseSchema):
+    data: ChatResponse

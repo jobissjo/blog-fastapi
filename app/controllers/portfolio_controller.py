@@ -1,5 +1,5 @@
 from app.services.portfolio_service import PortfolioService
-from app.schemas.portfolio_schema import ContactUsSchema
+from app.schemas.portfolio_schema import ContactUsSchema, ChatRequest
 
 class PortfolioController:
     def __init__(self):
@@ -13,3 +13,6 @@ class PortfolioController:
     
     async def get_contact_us_by_id(self, contact_us_id: str):
         return await self.portfolio_service.get_contact_us_by_id(contact_us_id)
+
+    async def chat(self, data: ChatRequest):
+        return await self.portfolio_service.chat(data)
