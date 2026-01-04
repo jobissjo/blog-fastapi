@@ -55,6 +55,14 @@
             "description": "Built ML-based systems including recommendation engines, sentiment analysis, and fault detection models from Mar 2023 - Apr 2024."
         }
     ],
+    "total_experience": "2.5 years",
+    "total_experience_python_django_angular_react": [
+        {"name": "Python", "summary": "2 years"},
+        {"name": "Django", "summary": "2 years"},
+        {"name": "Angular", "summary": "1 years"},
+        {"name": "React", "summary": "6 months"},
+        {"name": "FastAPI", "summary": "1 years"}
+    ],
     "projects": [
         {
             "name": "3DVix",

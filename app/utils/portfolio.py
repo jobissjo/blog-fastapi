@@ -33,6 +33,8 @@ INTENT_MAP = {
     "skills": "skills",
     "tech stack": "skills",
     "technologies": "skills",
+    "total experience": "total_experience",
+    "total experience angular react django python": "total_experience_python_django_angular_react",
     "experience": "experience",
     "work experience": "experience",
     "projects": "projects",
