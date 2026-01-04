@@ -56,13 +56,21 @@
         }
     ],
     "total_experience": "2.5 years",
-    "total_experience_python_django_angular_react": [
-        {"name": "Python", "summary": "2 years"},
-        {"name": "Django", "summary": "2 years"},
-        {"name": "Angular", "summary": "1 years"},
-        {"name": "React", "summary": "6 months"},
-        {"name": "FastAPI", "summary": "1 years"}
-    ],
+    "total_experience_stack":{
+        "python": "2 years",
+        "django": "2 years",
+        "angular": "1 years",
+        "react": "6 months",
+        "fastapi": "1 years",
+        "flask": "6 months",
+        "postgres": "2 years",
+        "sqlite": "2 years",
+        "mongodb": "2 years",
+        "git": "2 years",
+        "github": "2 years",
+        "docker": "3 months",
+        "redis": "2 years"
+    },
     "projects": [
         {
             "name": "3DVix",
