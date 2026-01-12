@@ -50,6 +50,7 @@ class BlogRepository:
             )
 
         if series_id:
+            print(series_id)
             query.update({"series_id": ObjectId(series_id)})
 
         if published is not None:
@@ -128,6 +129,7 @@ class BlogRepository:
                 "$set": {
                     **blog.model_dump(),
                     "user_id": ObjectId(user_id),
+                    "series_id": ObjectId(blog.series_id) if blog.series_id else None,
                     "updated_at": datetime.now().isoformat(),
                 }
             },

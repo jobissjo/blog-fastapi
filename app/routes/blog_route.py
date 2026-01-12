@@ -37,11 +37,12 @@ async def get_your_blog_by_id(
 @router.get("/")
 async def get_all_blogs(
     is_paginated: bool = False,
+    series_id: Optional[str] = None,
     skip: int = 0,
     limit: int = 10,
     controller: BlogController = Depends(BlogController),
 ):
-    return await controller.all_blogs(is_paginated, skip, limit)
+    return await controller.all_blogs(is_paginated, skip, limit, series_id)
 
 
 @router.get("/{blog_id}")
