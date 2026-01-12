@@ -45,8 +45,8 @@ class BlogService:
         data = await self.repository.get_blog_by_id(blog_id, token.id)
         return BlogDetailResponseSchema(data=data, success=True, message="Blog details")
 
-    async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10)->BlogListResponseSchema:
-        data = await self.repository.get_all_blogs(is_paginated, skip, limit, published=True)
+    async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10, series_id: Optional[str] = None)->BlogListResponseSchema:
+        data = await self.repository.get_all_blogs(is_paginated, skip, limit, published=True, series_id=series_id)
         return BlogListResponseSchema(data=data, total=len(data), success=True, message="All blogs")
 
     async def blog_details(self, blog_slug: str, visitor_id: Optional[str] = None)->BlogDetailResponseSchema:

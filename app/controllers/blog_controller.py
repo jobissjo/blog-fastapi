@@ -16,8 +16,8 @@ class BlogController:
     async def your_blog_by_id(self, token: UserTokenDecodedData, blog_id: str):
         return await self.service.your_blog_by_id(token, blog_id)
     
-    async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10):
-        return await self.service.all_blogs(is_paginated, skip, limit)
+    async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10, series_id: Optional[str] = None):
+        return await self.service.all_blogs(is_paginated, skip, limit, series_id)
     
     async def blog_details(self, blog_id: str, visitor_id: Optional[str] = None):
         return await self.service.blog_details(blog_id, visitor_id)
