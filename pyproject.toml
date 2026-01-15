@@ -10,9 +10,10 @@ dependencies = [
     "bcrypt>=5.0.0",
     "cloudinary>=1.44.1",
     "fastapi[standard]>=0.121.2",
+    "langchain>=1.2.4",
+    "langchain-groq>=1.1.1",
     "pydantic-settings>=2.12.0",
     "pyjwt>=2.10.1",
     "pymongo>=4.15.4",
-    "rapidfuzz>=3.14.3",
     "rusty-logger>=0.3.0",
 ]
