@@ -2,6 +2,7 @@
     "basic": {
         "name": "Jobi S S",
         "location": "Kochi, Kerala, India (Open to Relocation)",
+        "native": "kanniyakumari, Tamil Nadu, India",
         "summary": "Backend-focused Python Developer with 2+ years of experience building scalable applications using Django, FastAPI, and Flask. Strong in REST APIs, database optimization, WebSockets, and ML integrations.",
         "briefSummary": "I am Jobi S S, a Backend-focused Python Developer with 2+ years of experience building scalable applications using Django, FastAPI, and Flask. Strong in REST APIs, database optimization, WebSockets, and ML integrations."
     },
@@ -44,7 +45,17 @@
             "company": "Senscript Technologies",
             "period": "May 2024 - Present",
             "summary": "Working on backend-heavy applications involving Django, FastAPI, Flask, Angular, and React.",
-            "description": "Working on backend-heavy applications involving Django, FastAPI, Flask, Angular, and React from May 2024 - Present."
+            "description": "Working on backend-heavy applications involving Django, FastAPI, Flask, Angular, and React from May 2024 - Present.",
+            "projects": [
+                {
+                    "name": "3DVix",
+                    "description": "Chatbot integration for a 3D e-commerce platform using Django Channels and WebSockets."
+                },
+                {
+                    "name": "E-learning Platform",
+                    "description": "Built modules, assessments, leaderboards, and video streaming using m3u8."
+                }
+            ]
         },
         {
             "name": "Python Programmer (Data Scientist)",
@@ -56,69 +67,57 @@
         }
     ],
     "total_experience": "2.5 years",
-    "total_experience_stack":{
-        "python": "2 years",
-        "django": "2 years",
-        "angular": "1 years",
-        "react": "6 months",
-        "fastapi": "1 years",
-        "flask": "6 months",
-        "postgres": "2 years",
-        "sqlite": "2 years",
-        "mongodb": "2 years",
-        "git": "2 years",
-        "github": "2 years",
-        "docker": "3 months",
-        "redis": "2 years"
-    },
-    "projects": [
-        {
-            "name": "3DVix",
-            "description": "Chatbot integration for a 3D e-commerce platform using Django Channels and WebSockets."
-        },
-        {
-            "name": "E-learning Platform",
-            "description": "Built modules, assessments, leaderboards, and video streaming using m3u8."
-        },
-        {
-            "name": "Job Portal",
-            "description": "Angular + FastAPI job portal supporting employer and employee workflows."
-        },
+    "personal_projects": [
         {
             "name": "Personal Blog",
-            "description": "FastAPI backend with Next.js frontend focusing on SEO and clean APIs."
+            "description": "FastAPI backend with Next.js frontend focusing on SEO and clean APIs.",
+            "duration": "November 2025 - December 2025",
+            "stacks": ["FastAPI", "Next.js", "Tailwind CSS", "MongoDB"],
+            "key_features": [
+                "Migrated from react to nextjs"
+            ]
+        },
+        {
+            "name": "Job Haunt Project",
+            "description": "This is project is about track learning progress of the user and track the application status",
+            "duration": "October 2025 - November 2025",
+            "stacks": ["FastAPI", "React", "Tailwind CSS", "MongoDB"]
+        },
+        {
+            "name": "MERN Real Time Chat Project",
+            "description": "Angular + FastAPI job portal supporting employer and employee workflows.",
+            "duration": "ONovember 2024 - May 2025",
+            "stacks": ["React", "Express js", "MUI", "MongoDB"],
+            "key_features": [
+                "WebSockets for real time communication"
+            ]
+        },
+
+        {
+            "name": "Job Portal Project",
+            "description": "Angular + FastAPI job portal supporting employer and employee workflows.",
+            "duration": "January 2023 - June 2023"
+        },
+        {
+            "name": "Ecommerce Project",
+            "description": "This Ecommerce project is a using frontend angular and backend json server.",
+            "duration": "October 2022 -January 2023"
+        },
+        {
+            "name": "Todo App",
+            "description": "This Todo app is a using frontend angular and backend json server.",
+            "duration": "June 2022 - July 2022"
         }
+        
     ],
     "contact": {
         "email": "jobisjobi1234@gmail.com",
         "phone": "+91 9745992983",
-        "links": {
+        "social_media_links": {
             "linkedin": "https://www.linkedin.com/in/jobiss12/",
             "github": "https://github.com/jobissjo",
             "portfolio": "https://jobiss.vercel.app/",
             "leetcode": "https://leetcode.com/u/jobi_s_s/"
-        },
-        "social_media_links": [
-            {
-                "name": "linkedin",
-                "url": "https://www.linkedin.com/in/jobiss12/",
-                "description": "https://www.linkedin.com/in/jobiss12/"
-            },
-            {
-                "name": "github",
-                "url": "https://github.com/jobissjo",
-                "description": "https://github.com/jobissjo"
-            },
-            {
-                "name": "portfolio",
-                "url": "https://jobiss.vercel.app/",
-                "description": "https://jobiss.vercel.app/"
-            },
-            {
-                "name": "leetcode",
-                "url": "https://leetcode.com/u/jobi_s_s/",
-                "description": "https://leetcode.com/u/jobi_s_s/"
-            }
-        ]
+        }
     }
 }

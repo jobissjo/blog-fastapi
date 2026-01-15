@@ -1,9 +1,11 @@
 from typing import Dict, Any
 import aiofiles
 import json
-from rapidfuzz import process, fuzz
 from pathlib import Path
 from app.core.logger_config import logger
+from langchain_groq import ChatGroq
+from langchain_core.messages import SystemMessage, HumanMessage
+import json
 
 
 PROFILE_CACHE: Dict[str, Any] | None = None
@@ -24,95 +26,54 @@ async def get_profile() -> Dict[str, Any]:
     return PROFILE_CACHE
 
 
-INTENT_MAP = {
-    "who are you": "basic.summary",
-    "your name": "basic.name",
-    "where are you located": "basic.location",
-    "tell me about yourself": "basic.briefSummary",
-    "tell me about experience": "experience",
-    "skills": "skills",
-    "tech stack": "skills",
-    "technologies": "skills",
-    "total experience": "total_experience",
-    "total experience angular": "total_experience_stack.angular",
-    "total experience django": "total_experience_stack.django",
-    "total experience fastapi": "total_experience_stack.fastapi",
-    "total experience flask": "total_experience_stack.flask",
-    "total experience react": "total_experience_stack.react",
-    "total experience python": "total_experience_stack.python",
-    "total experience postgres": "total_experience_stack.postgres",
-    "total experience sqlite": "total_experience_stack.sqlite",
-    "total experience mongodb": "total_experience_stack.mongodb",
-    "total experience git": "total_experience_stack.git",
-    "total experience github": "total_experience_stack.github",
-    "total experience docker": "total_experience_stack.docker",
-    "total experience redis": "total_experience_stack.redis",
-
-    "experience": "experience",
-    "work experience": "experience",
-    "projects": "projects",
-    "portfolio projects": "projects",
-    "contact": "contact",
-    "email": "contact.email",
-    "phone": "contact.phone",
-    "links": "contact.links",
-    "linkedin": "contact.links.linkedin",
-    "github": "contact.links.github",
-    "portfolio": "contact.links.portfolio",
-    "leetcode": "contact.links.leetcode",
-    "social media links": "contact.social_media_links",
-}
-
-
-# ----------------------------
-# Helpers
-# ----------------------------
-def get_value_from_path(data: Dict[str, Any], path: str):
-    for key in path.split("."):
-        data = data[key]
-    return data
-
-
-def format_response(data: Any) -> str:
-    if isinstance(data, dict):
-        responses = []
-        for k, v in data.items():
-            if isinstance(v, list):
-                responses.append(f"• {k}: {format_response(v)}")
-            else:
-                responses.append(f"• {k}: {v}")
-        return "\n".join(responses)
-
-    if isinstance(data, list):
-        responses = []
-        for item in data:
-            if isinstance(item, dict):
-                responses.append(f"• {item['name']}: {item.get('description', '')}")
-            elif isinstance(item, list):
-                responses.append(f"• {format_response(item)}")
-            else:
-                responses.append(str(item))
-        return "\n".join(responses)
-
-    return str(data)
-
 
 async def get_bot_reply(question: str) -> str:
     profile = await get_profile()
 
-    match, score, _ = process.extractOne(
-        question.lower(), INTENT_MAP.keys(), scorer=fuzz.token_sort_ratio
-    )
+    system_prompt = """
+You are an AI assistant acting as Jobi S S.
 
-    if score < 55:
-        return (
-            "🤖 You can ask me about my skills, experience, projects, "
-            "or how to contact me."
-        )
+Rules:
+1. You MUST answer ONLY using the provided profile JSON.
+2. Do NOT add any information that is not present in the JSON.
+3. Do NOT guess or assume.
+4. If the answer is not found in the JSON, respond with:
+   "I don't have that information in my profile. Could you please rephrase or ask something else?"
+5. Answer in first person (as Jobi S S).
+6. Keep responses clear, professional, and concise.
+7. If the data is a list, format it as bullet points.
+8. If the data is structured (skills, experience, projects), summarize naturally.
+"""
+
+    user_prompt = f"""
+Here is my profile data (JSON):
+
+<PROFILE_JSON>
+{json.dumps(profile, indent=2)}
+</PROFILE_JSON>
+
+User question:
+{question}
+
+Based on the rules, answer the question.
+"""
+
     try:
-        path = INTENT_MAP[match]
-        data = get_value_from_path(profile, path)
-        return format_response(data)
+        llm = ChatGroq(
+            model_name="llama-3.3-70b-versatile",
+            temperature=0.2,   # low hallucination
+            streaming=False,
+        )
+        response = await llm.ainvoke(
+            [
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=user_prompt),
+            ]
+        )
+        return response.content.strip()
+
     except Exception as e:
-        logger.error(f"Error in get_bot_reply: {e}")
-        return "I'm sorry, I don't understand that. Can you please rephrase?"
+        logger.error(f"Groq error: {e}")
+        return "Sorry, something went wrong while answering your question."
+
+
