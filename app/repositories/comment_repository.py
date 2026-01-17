@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from bson import ObjectId
@@ -24,8 +24,8 @@ class CommentRepository:
             "visitor_id": visitor_id,
             "name": comment.name or "Anonymous",
             "comment": comment.comment,
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
         }
         inserted = await self.collection.insert_one(payload)
         payload["_id"] = inserted.inserted_id

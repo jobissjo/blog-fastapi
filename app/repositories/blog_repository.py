@@ -189,11 +189,16 @@ class BlogRepository:
                 return
             await self.like_collection.insert_one(
                 {
-                    "blog_id": blog_id,
+                    "blog_id": ObjectId(blog_id),
                     "visitor_id": visitor_id,
                     "liked_at": datetime.now().isoformat(),
                 }
             )
+            await self.collection.update_one(
+                {"_id": ObjectId(blog_id)},
+                {"$inc": {"likes": 1}}
+            )
+
         await self.collection.update_one(
             {"_id": blog_id},
             {
