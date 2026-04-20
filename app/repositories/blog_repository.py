@@ -50,7 +50,6 @@ class BlogRepository:
             )
 
         if series_id:
-            print(series_id)
             query.update({"series_id": ObjectId(series_id)})
 
         if published is not None:
@@ -88,9 +87,14 @@ class BlogRepository:
         cursor = await self.collection.aggregate(pipeline)
         results = []
         async for doc in cursor:
-            print(doc, 'doc')
             results.append(BlogResponseSchema(**doc))
         return results
+
+    async def get_all_blogs_count(self, series_id: Optional[str] = None) -> int:
+        query = {"published": True}
+        if series_id:
+            query.update({"series_id": ObjectId(series_id)})
+        return await self.collection.count_documents(query)
 
     async def get_blog_by_id(
         self, blog_id: str=None, user_id: str = None, published: Optional[bool] = None,

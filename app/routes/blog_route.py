@@ -42,7 +42,12 @@ async def get_all_blogs(
     limit: int = 10,
     controller: BlogController = Depends(BlogController),
 ):
-    return await controller.all_blogs(is_paginated, skip, limit, series_id)
+    data = await controller.all_blogs(is_paginated, skip, limit, series_id)
+    count = await controller.all_blogs_count(series_id)
+    return {
+        "data": data,
+        "total": count
+    }
 
 
 @router.get("/{blog_id}")
