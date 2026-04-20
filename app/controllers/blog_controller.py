@@ -18,6 +18,9 @@ class BlogController:
     
     async def all_blogs(self, is_paginated: bool = False, skip: int = 1, limit: int = 10, series_id: Optional[str] = None):
         return await self.service.all_blogs(is_paginated, skip, limit, series_id)
+
+    async def all_blogs_count(self, series_id: Optional[str] = None):
+        return await self.service.all_blogs_count(series_id)
     
     async def blog_details(self, blog_id: str, visitor_id: Optional[str] = None):
         return await self.service.blog_details(blog_id, visitor_id)
