@@ -1,7 +1,7 @@
 from typing import Optional
 from app.services.blog_service import BlogService
 from app.schemas.user_schema import UserTokenDecodedData
-from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema
+from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema, BlogChatResponseSchema
 
 class BlogController:
     def __init__(self):
@@ -36,3 +36,6 @@ class BlogController:
 
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.service.delete_blog(token, blog_id)
+
+    async def chat(self, blog_slug: str, question: str)->BlogChatResponseSchema:
+        return await self.service.chat(blog_slug, question)

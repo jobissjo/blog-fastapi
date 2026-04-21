@@ -36,7 +36,6 @@ class BlogCreateSchema(BaseModel):
     series_id: Optional[str] = None
     view_count: int = 0
 
-    
 
 class BlogUpdateSchema(BaseModel):
     title: Optional[str] = None
@@ -74,5 +73,16 @@ class BlogDetailResponseSchema(BaseModel):
 class BlogListResponseSchema(BaseModel):
     data: List[BlogResponseSchema]
     total: int
+    success: bool
+    message: str
+
+class BlogChatRequest(BaseModel):
+    question: str
+
+class BlogChatResponse(BaseModel):
+    answer: str
+
+class BlogChatResponseSchema(BaseModel):
+    data: BlogChatResponse
     success: bool
     message: str

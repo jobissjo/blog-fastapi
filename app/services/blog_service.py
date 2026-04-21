@@ -9,8 +9,11 @@ from app.schemas.blog_schema import (
     BlogUpdateSchema,
     BlogListResponseSchema,
     BlogDetailResponseSchema,
+    BlogChatResponse,
+    BlogChatResponseSchema,
 )
 from fastapi import HTTPException
+from app.utils.blog_chat import get_blog_bot_reply
 
 BLOG_NOT_FOUND_MESSAGE = "Blog not found"
 
@@ -119,3 +122,18 @@ class BlogService:
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.repository.delete_blog(blog_id, token.id)
         return BaseResponseSchema(success=True, message="Blog deleted successfully")
+
+    async def chat(self, blog_slug: str, question: str) -> BlogChatResponseSchema:
+        blog = await self.repository.get_blog_by_id(blog_slug=blog_slug, published=True)
+        if not blog:
+            raise HTTPException(status_code=404, detail=BLOG_NOT_FOUND_MESSAGE)
+        answer = await get_blog_bot_reply(
+            blog_title=blog.title,
+            blog_content=blog.content,
+            question=question,
+        )
+        return BlogChatResponseSchema(
+            data=BlogChatResponse(answer=answer),
+            success=True,
+            message="Blog chat retrieved successfully",
+        )
