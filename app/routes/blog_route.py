@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Request, Response
 from app.services.common_service import CommonService
 from app.schemas.user_schema import UserTokenDecodedData
 from app.controllers.blog_controller import BlogController
-from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema
+from app.schemas.blog_schema import BlogCreateFileSchema, BlogUpdateSchema, BlogChatRequest, BlogChatResponseSchema
 from app.utils.visitor import get_or_set_visitor_id
 
 router = APIRouter(prefix="/blog", tags=["Blog"])
@@ -80,6 +80,15 @@ async def update_blog(
     controller: BlogController = Depends(BlogController),
 ):
     return await controller.update_blog(token, blog_id, blog)
+
+
+@router.post("/{blog_slug}/chat")
+async def blog_chat(
+    blog_slug: str,
+    data: BlogChatRequest,
+    controller: BlogController = Depends(BlogController),
+) -> BlogChatResponseSchema:
+    return await controller.chat(blog_slug, data.question)
 
 
 @router.patch("/{blog_id}")
