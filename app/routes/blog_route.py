@@ -23,7 +23,11 @@ async def get_your_blogs(
     token: UserTokenDecodedData = Depends(CommonService.verify_token_get_user),
     controller: BlogController = Depends(BlogController),
 ):
-    return await controller.your_blogs(token)
+    data = await controller.your_blogs(token)
+    return {
+        "data": data,
+        "total": len(data.data)
+    }
 
 @router.get("/your/{blog_id}")
 async def get_your_blog_by_id(
