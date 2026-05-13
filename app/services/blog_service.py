@@ -123,8 +123,8 @@ class BlogService:
         await self.repository.delete_blog(blog_id, token.id)
         return BaseResponseSchema(success=True, message="Blog deleted successfully")
 
-    async def get_related_blogs(self, blog_id: str) -> BlogListResponseSchema:
-        data = await self.repository.get_related_blogs(blog_id)
+    async def get_related_blogs(self, blog_slug: str) -> BlogListResponseSchema:
+        data = await self.repository.get_related_blogs(blog_slug)
         return BlogListResponseSchema(data=data, total=len(data), success=True, message="Related blogs")
 
     async def chat(self, blog_slug: str, question: str) -> BlogChatResponseSchema:

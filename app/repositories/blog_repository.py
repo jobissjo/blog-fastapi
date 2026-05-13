@@ -211,9 +211,9 @@ class BlogRepository:
             },
         )
 
-    async def get_related_blogs(self, blog_id: str) -> List[BlogResponseSchema]:
+    async def get_related_blogs(self, blog_slug: str) -> List[BlogResponseSchema]:
         # Get the current blog to find its series_id and tags
-        current_blog = await self.collection.find_one({"_id": ObjectId(blog_id)})
+        current_blog = await self.collection.find_one({"slug": blog_slug})
         if not current_blog:
             return []
 
@@ -226,7 +226,7 @@ class BlogRepository:
         # 3. Exclude the current blog
         # 4. Only published blogs
         query = {
-            "_id": {"$ne": ObjectId(blog_id)},
+            "_id": {"$ne": current_blog["_id"]},
             "published": True,
             "$or": []
         }
