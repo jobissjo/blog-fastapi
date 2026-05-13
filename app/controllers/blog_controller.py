@@ -37,5 +37,8 @@ class BlogController:
     async def delete_blog(self, token: UserTokenDecodedData, blog_id: str):
         await self.service.delete_blog(token, blog_id)
 
+    async def get_related_blogs(self, blog_id: str):
+        return await self.service.get_related_blogs(blog_id)
+
     async def chat(self, blog_slug: str, question: str)->BlogChatResponseSchema:
         return await self.service.chat(blog_slug, question)

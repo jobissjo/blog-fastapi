@@ -61,6 +61,14 @@ async def get_blog_by_id(
     return await controller.blog_details(blog_id, visitor_id)
 
 
+@router.get("/{blog_id}/related")
+async def get_related_blogs(
+    blog_id: str,
+    controller: BlogController = Depends(BlogController),
+):
+    return await controller.get_related_blogs(blog_id)
+
+
 @router.post("/{blog_slug}/like")
 async def like_blog(
     blog_slug: str,

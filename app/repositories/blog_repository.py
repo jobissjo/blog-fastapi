@@ -211,6 +211,57 @@ class BlogRepository:
             },
         )
 
+    async def get_related_blogs(self, blog_id: str) -> List[BlogResponseSchema]:
+        # Get the current blog to find its series_id and tags
+        current_blog = await self.collection.find_one({"_id": ObjectId(blog_id)})
+        if not current_blog:
+            return []
+
+        series_id = current_blog.get("series_id")
+        tags = current_blog.get("tags", [])
+
+        # Build query for related blogs
+        # 1. Match blogs with the same series_id (if series_id exists)
+        # 2. OR Match blogs that share at least one tag
+        # 3. Exclude the current blog
+        # 4. Only published blogs
+        query = {
+            "_id": {"$ne": ObjectId(blog_id)},
+            "published": True,
+            "$or": []
+        }
+
+        if series_id:
+            query["$or"].append({"series_id": ObjectId(series_id)})
+        
+        if tags:
+            query["$or"].append({"tags": {"$in": tags}})
+
+        # If no series or tags, we might want to return nothing or latest blogs
+        # But based on request, we focus on series and matching contains (tags)
+        if not query["$or"]:
+            return []
+
+        pipeline = [
+            {"$match": query},
+            {
+                "$lookup": {
+                    "from": "users",
+                    "localField": "user_id",
+                    "foreignField": "_id",
+                    "as": "user_details"
+                }
+            },
+            {"$unwind": {"path": "$user_details", "preserveNullAndEmptyArrays": True}},
+            {"$limit": 5}
+        ]
+
+        cursor = await self.collection.aggregate(pipeline)
+        results = []
+        async for doc in cursor:
+            results.append(BlogResponseSchema(**doc))
+        return results
+
     async def delete_blog(self, blog_id: str, user_id: str):
         await self.collection.delete_one(
             {"_id": ObjectId(blog_id), "user_id": ObjectId(user_id)}
