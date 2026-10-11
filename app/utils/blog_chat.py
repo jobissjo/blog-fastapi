@@ -35,7 +35,7 @@ User question:
 
     try:
         llm = ChatGroq(
-            model_name="llama-3.3-70b-versatile",
+            model_name="openai/gpt-oss-120b",
             temperature=0.2,
             streaming=False,
         )
